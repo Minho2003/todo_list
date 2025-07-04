@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>나의 ToDo List</title>
+</head>
+
+<body>
+    <h1>나의 ToDo List</h1>
+
+    <!-- 메모 작성 폼 -->
+    <form method="post" action="{% url 'createTodo' %}">
+        {% csrf_token %}
+        <textarea name="memo" rows="4" cols="50" placeholder="메모를 입력하세요."></textarea><br>
+        <button type="submit">저장</button>
+    </form>
+
+    <h2>메모 목록</h2>
+    <ul>
+        {% for todo in todos %}
+        <li>
+            {{ todo.content }} - 생성된 시간 : {{ todo.date_time|date:"Y-m-d H:i" }}
+            <form method="post" action="{% url 'deleteTodo' %}" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                <button type="submit" style="width: 40px; height: 20px;">완료</button>
+            </form>
+            <form method="post" action="{% url 'updateTodo' %}">
+                {% csrf_token %}
+                <input type="hidden" name="todo_id" value="{{ todo.id }}">
+                <textarea name="memo" rows="2" cols="30" placeholder="수정할 내용을 입력하세요."></textarea>
+                <button type="submit">수정</button>
+            </form>
+        </li>
+        {% empty %}
+        <li>메모가 없습니다.</li>
+        {% endfor %}
+    </ul>
+</body>
+
+</html>
